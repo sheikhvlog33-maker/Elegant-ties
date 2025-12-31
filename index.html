@@ -3,30 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Ties - Admin</title>
+    <title>Elegant Ties by Mrs Ajaz Sheikh</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #fff0f5; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input, button { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ddd; }
-        button { background-color: #ff69b4; color: white; cursor: pointer; border: none; font-weight: bold; }
-        .product-card { border: 1px solid #ddd; padding: 15px; margin-top: 20px; border-radius: 10px; background: #fff; position: relative; }
-        img { max-width: 100%; border-radius: 10px; }
-        .del-btn { background-color: #ff4d4d; margin-top: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: #fff5f8; margin: 0; padding: 20px; }
+        .header { background: #d02090; color: white; padding: 15px; border-radius: 0 0 20px 20px; margin: -20px -20px 20px -20px; }
+        .admin-box { display: none; background: #fff; padding: 20px; border-radius: 15px; border: 2px dashed #ff69b4; margin-bottom: 30px; }
+        .product-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 25px; box-shadow: 0 6px 12px rgba(0,0,0,0.08); border: 1px solid #ffdae9; }
+        img { max-width: 100%; border-radius: 12px; height: auto; }
+        h2 { color: #d02090; }
+        .price { color: #d02090; font-weight: bold; font-size: 1.3rem; }
+        .wa-btn { background-color: #25d366; color: white; padding: 12px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; }
+        .del-btn { display: none; background-color: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 8px; margin-top: 15px; width: 100%; cursor: pointer; }
+        input, .add-btn { width: 95%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ffdae9; box-sizing: border-box; }
+        .add-btn { background: #ff69b4; color: white; border: none; font-weight: bold; }
+        #admin-lock { color: #ffdae9; cursor: pointer; margin-top: 60px; font-size: 12px; padding: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="color:#d02090;">Elegant Ties Admin</h2>
-    <input type="text" id="name" placeholder="Product Name">
-    <input type="number" id="price" placeholder="Price (PKR)">
-    <input type="file" id="image" accept="image/*">
-    <button onclick="addItem()">Add to Website</button>
-    <hr>
+    <div class="header">
+        <h1 style="margin:0;">Elegant Ties</h1>
+        <p style="margin:5px 0 0 0;">By Mrs Ajaz Sheikh</p>
+    </div>
+
+    <div id="admin-panel" class="admin-box">
+        <h3>Admin Panel (Unlocked)</h3>
+        <input type="text" id="name" placeholder="Item Name">
+        <input type="number" id="price" placeholder="Price (PKR)">
+        <input type="file" id="image" accept="image/*">
+        <button class="add-btn" onclick="addItem()">Upload to Website</button>
+    </div>
+
     <div id="product-list"></div>
-</div>
+
+    <div id="admin-lock" onclick="checkPass()">Admin Login</div>
 
 <script>
     const firebaseConfig = {
@@ -41,42 +53,62 @@
 
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const database = firebase.database();
+    let isAdminMode = false;
+
+    function checkPass() {
+        let pass = prompt("Secret Password Dalein:");
+        if(pass === "1feb") { // Naya Password
+            isAdminMode = true;
+            document.getElementById('admin-panel').style.display = 'block';
+            alert("Success! Buttons are now visible.");
+            renderProducts();
+        } else {
+            alert("Wrong Password!");
+        }
+    }
 
     function addItem() {
         const name = document.getElementById('name').value;
         const price = document.getElementById('price').value;
         const file = document.getElementById('image').files[0];
-        if(!name || !price || !file) { alert("Please fill everything!"); return; }
+        if(!name || !price || !file) return;
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            database.ref('products').push({ name, price, image: e.target.result });
-            alert("Product Added!");
+            database.ref('products').push({ name, price, image: e.target.result })
+            .then(() => {
+                alert("Product Added!");
+                location.reload(); 
+            });
         };
         reader.readAsDataURL(file);
     }
 
     function deleteItem(id) {
-        if(confirm("Kya aap ye product delete karna chahti hain?")) {
+        if(confirm("Are you sure?")) {
             database.ref('products/' + id).remove();
-            alert("Deleted!");
         }
     }
 
-    database.ref('products').on('value', (snapshot) => {
-        const data = snapshot.val();
-        const list = document.getElementById('product-list');
-        list.innerHTML = "<h3>Current Products</h3>";
-        for (let id in data) {
-            list.innerHTML += `
-                <div class="product-card">
-                    <img src="${data[id].image}">
-                    <h4>${data[id].name}</h4>
-                    <p>Rs. ${data[id].price}</p>
-                    <button class="del-btn" onclick="deleteItem('${id}')">Delete Product</button>
-                </div>`;
-        }
-    });
+    function renderProducts() {
+        database.ref('products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const list = document.getElementById('product-list');
+            list.innerHTML = "";
+            for (let id in data) {
+                list.innerHTML += `
+                    <div class="product-card">
+                        <img src="${data[id].image}">
+                        <h2>${data[id].name}</h2>
+                        <p class="price">Rs. ${data[id].price}</p>
+                        <a class="wa-btn" href="https://wa.me/923000000000?text=I want to order ${data[id].name}">Order on WhatsApp</a>
+                        <button class="del-btn" style="display:${isAdminMode ? 'block' : 'none'}" onclick="deleteItem('${id}')">Delete Item</button>
+                    </div>`;
+            }
+        });
+    }
+
+    renderProducts();
 </script>
 </body>
 </html>
