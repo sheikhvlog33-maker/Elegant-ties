@@ -1,16 +1,88 @@
-// Naya Firebase Code
-const firebaseConfig = {
-  apiKey: "AIzaSyB5vNGFV16jT7TqPnbfg4o1ZrPAGxrw67k",
-  authDomain: "elegant-ties-by-mrs-ajazsheikh.firebaseapp.com",
-  databaseURL: "https://elegant-ties-by-mrs-ajazsheikh-default-rtdb.firebaseio.com",
-  projectId: "elegant-ties-by-mrs-ajazsheikh",
-  storageBucket: "elegant-ties-by-mrs-ajazsheikh.firebasestorage.app",
-  messagingSenderId: "294111960990",
-  appId: "1:294111960990:web:c386907a3504605ea5808f"
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Ties by Mrs Ajaz Sheikh</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f9f9f9; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, button { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ddd; }
+        button { background-color: #25d366; color: white; font-weight: bold; cursor: pointer; border: none; }
+        .product-card { border: 1px solid #eee; padding: 15px; margin-top: 20px; border-radius: 10px; }
+        img { max-width: 100%; border-radius: 10px; }
+    </style>
+</head>
+<body>
 
-// Initialize Firebase
-if (!firebase.apps.length) {
+<div class="container">
+    <h2>Elegant Ties - Admin Panel</h2>
+    <input type="text" id="name" placeholder="Product Name (e.g. Gajray)">
+    <input type="number" id="price" placeholder="Price (PKR)">
+    <input type="file" id="image" accept="image/*">
+    <button onclick="addItem()">Add Product</button>
+
+    <div id="product-list"></div>
+</div>
+
+<script>
+    // Aapka asli Firebase Code
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5vNGFV16jT7TqPnbfg4o1ZrPAGxrw67k",
+      authDomain: "elegant-ties-by-mrs-ajazsheikh.firebaseapp.com",
+      databaseURL: "https://elegant-ties-by-mrs-ajazsheikh-default-rtdb.firebaseio.com",
+      projectId: "elegant-ties-by-mrs-ajazsheikh",
+      storageBucket: "elegant-ties-by-mrs-ajazsheikh.firebasestorage.app",
+      messagingSenderId: "294111960990",
+      appId: "1:294111960990:web:c386907a3504605ea5808f"
+    };
+
     firebase.initializeApp(firebaseConfig);
-}
-const database = firebase.database();
+    const database = firebase.database();
+
+    function addItem() {
+        const name = document.getElementById('name').value;
+        const price = document.getElementById('price').value;
+        const file = document.getElementById('image').files[0];
+
+        if(!name || !price || !file) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
+            const newPostRef = database.ref('products').push();
+            newPostRef.set({
+                name: name,
+                price: price,
+                image: imageData
+            }).then(() => {
+                alert("Product Added Successfully!");
+                location.reload();
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Products dikhane ke liye
+    database.ref('products').on('value', (snapshot) => {
+        const data = snapshot.val();
+        const list = document.getElementById('product-list');
+        list.innerHTML = "<h3>Our Products</h3>";
+        for (let id in data) {
+            list.innerHTML += `
+                <div class="product-card">
+                    <img src="${data[id].image}">
+                    <h4>${data[id].name}</h4>
+                    <p>Price: ${data[id].price} PKR</p>
+                    <button onclick="window.open('https://wa.me/YOUR_NUMBER?text=I want to order ${data[id].name}')">Order on WhatsApp</button>
+                </div>`;
+        }
+    });
+</script>
+</body>
+</html>
