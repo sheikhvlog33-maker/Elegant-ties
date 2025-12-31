@@ -1,89 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Accessories by Mrs Ajaz</title>
-    <style>
-        :root { 
-            --floral-pink: #FF69B4; 
-            --soft-rose: #fce4ec;
-            --leaf-green: #25D366;
-            --text-grey: #4f4f4f;
-        }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #fffafb; margin: 0; padding: 20px; color: var(--text-grey); }
-        header { 
-            background: white; 
-            color: var(--floral-pink); 
-            padding: 30px; 
-            text-align: center; 
-            border-bottom: 4px solid var(--soft-rose);
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
-        }
-        .admin-panel { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
-            margin: 25px auto; 
-            max-width: 450px; 
-            border: 1px dashed var(--floral-pink);
-        }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #f0f0f0; border-radius: 10px; outline: none; background: #fffcfd; }
-        .publish-btn { 
-            background: var(--floral-pink); 
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            width: 100%; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: 0.3s;
-        }
-        .publish-btn:hover { background: #ff1493; transform: scale(1.02); }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: auto; }
-        .card { 
-            background: white; 
-            padding: 15px; 
-            border-radius: 20px; 
-            text-align: center; 
-            border: 1px solid var(--soft-rose);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-        }
-        .card img { max-width: 100%; height: 280px; object-fit: cover; border-radius: 15px; }
-        .price { color: var(--floral-pink); font-size: 1.5em; font-weight: bold; margin: 10px 0; }
-        .whatsapp-btn { 
-            background: var(--leaf-green); 
-            color: white; 
-            text-decoration: none; 
-            padding: 12px 20px; 
-            display: inline-block; 
-            border-radius: 30px; 
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1 style="margin:0;">Elegant Ties & Flowers</h1>
-    <p style="color: #a3a3a3; font-style: italic;">Handmade with Love by Mrs Ajaz</p>
-</header>
-
-<div class="admin-panel">
-    <h3 style="text-align:center; color: var(--floral-pink); margin-top:0;">New Product Entry</h3>
-    <input type="file" id="prodImg" accept="image/*">
-    <input type="text" id="prodName" placeholder="Product Name (e.g., Red Rose Bouquet)">
-    <input type="number" id="prodPrice" placeholder="Price (PKR)">
-    <button class="publish-btn" onclick="addItem()">✨ Add to My Shop</button>
-</div>
-
-<div class="product-grid" id="shopGrid"></div>
-
 <script>
     function addItem() {
         const name = document.getElementById('prodName').value;
@@ -91,7 +5,7 @@
         const imgInput = document.getElementById('prodImg').files[0];
         
         if(!name || !price || !imgInput) {
-            alert("Please fill all details and select a photo");
+            alert("Pehle photo aur details bharein");
             return;
         }
 
@@ -101,20 +15,18 @@
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
-                <img src="${e.target.result}">
-                <h3 style="margin:15px 0 5px 0;">${name}</h3>
+                <img src="${e.target.result}" style="width:100%; border-radius:15px;">
+                <h3>${name}</h3>
                 <p class="price">Rs. ${price}</p>
-                <a href="https://wa.me/923001234567?text=Asalam-o-Alaikum, I want to buy: ${name}" class="whatsapp-btn" target="_blank">Order on WhatsApp</a>
+                <a href="https://wa.me/923123456789?text=Asalam-o-Alaikum, I want to order: ${name}" 
+                   class="whatsapp-btn" target="_blank" 
+                   style="background:#25D366; color:white; padding:10px 20px; text-decoration:none; border-radius:20px; display:inline-block;">
+                   Order on WhatsApp
+                </a>
             `;
-            grid.insertAfter(card, grid.firstChild); // New item at top
-            
-            // Clear fields
-            document.getElementById('prodName').value = '';
-            document.getElementById('prodPrice').value = '';
+            grid.prepend(card);
+            alert("Product Added! Niche check karen.");
         };
         reader.readAsDataURL(imgInput);
     }
 </script>
-
-</body>
-</html>
