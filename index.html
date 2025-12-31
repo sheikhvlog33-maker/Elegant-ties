@@ -3,50 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Ties by Mrs Ajaz</title>
+    <title>Elegant Accessories by Mrs Ajaz</title>
     <style>
-        :root { --gold: #D4AF37; --dark: #1a1a1a; }
-        body { font-family: 'Georgia', serif; background: #f9f9f9; margin: 0; padding: 20px; }
-        header { background: var(--dark); color: white; padding: 20px; text-align: center; border-bottom: 4px solid var(--gold); }
-        .admin-panel { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: 500px; margin-inline: auto; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        .publish-btn { background: var(--gold); color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; }
-        .container { max-width: 1000px; margin: auto; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
-        .card img { max-width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
-        .price { color: #b12704; font-size: 1.2em; font-weight: bold; }
-        .whatsapp-btn { background: #25D366; color: white; text-decoration: none; padding: 10px 20px; display: inline-block; border-radius: 5px; margin-top: 10px; }
+        :root { 
+            --floral-pink: #FF69B4; 
+            --soft-rose: #fce4ec;
+            --leaf-green: #25D366;
+            --text-grey: #4f4f4f;
+        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #fffafb; margin: 0; padding: 20px; color: var(--text-grey); }
+        header { 
+            background: white; 
+            color: var(--floral-pink); 
+            padding: 30px; 
+            text-align: center; 
+            border-bottom: 4px solid var(--soft-rose);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.1);
+        }
+        .admin-panel { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+            margin: 25px auto; 
+            max-width: 450px; 
+            border: 1px dashed var(--floral-pink);
+        }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #f0f0f0; border-radius: 10px; outline: none; background: #fffcfd; }
+        .publish-btn { 
+            background: var(--floral-pink); 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            width: 100%; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: 0.3s;
+        }
+        .publish-btn:hover { background: #ff1493; transform: scale(1.02); }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: auto; }
+        .card { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 20px; 
+            text-align: center; 
+            border: 1px solid var(--soft-rose);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        .card img { max-width: 100%; height: 280px; object-fit: cover; border-radius: 15px; }
+        .price { color: var(--floral-pink); font-size: 1.5em; font-weight: bold; margin: 10px 0; }
+        .whatsapp-btn { 
+            background: var(--leaf-green); 
+            color: white; 
+            text-decoration: none; 
+            padding: 12px 20px; 
+            display: inline-block; 
+            border-radius: 30px; 
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Elegant Ties</h1>
-    <p>Premium Quality Ties by Mrs Ajaz</p>
+    <h1 style="margin:0;">Elegant Ties & Flowers</h1>
+    <p style="color: #a3a3a3; font-style: italic;">Handmade with Love by Mrs Ajaz</p>
 </header>
 
-<div class="container">
-    <div class="admin-panel">
-        <h3>Add New Tie to Shop</h3>
-        <input type="file" id="tieImage" accept="image/*">
-        <input type="text" id="tieName" placeholder="Tie Name (e.g. Blue Silk Tie)">
-        <input type="number" id="tiePrice" placeholder="Price (PKR)">
-        <button class="publish-btn" onclick="addTie()">Add to Shop</button>
-    </div>
-
-    <div class="product-grid" id="shopGrid">
-        </div>
+<div class="admin-panel">
+    <h3 style="text-align:center; color: var(--floral-pink); margin-top:0;">New Product Entry</h3>
+    <input type="file" id="prodImg" accept="image/*">
+    <input type="text" id="prodName" placeholder="Product Name (e.g., Red Rose Bouquet)">
+    <input type="number" id="prodPrice" placeholder="Price (PKR)">
+    <button class="publish-btn" onclick="addItem()">✨ Add to My Shop</button>
 </div>
 
+<div class="product-grid" id="shopGrid"></div>
+
 <script>
-    function addTie() {
-        const name = document.getElementById('tieName').value;
-        const price = document.getElementById('tiePrice').value;
-        const imageFile = document.getElementById('tieImage').files[0];
+    function addItem() {
+        const name = document.getElementById('prodName').value;
+        const price = document.getElementById('prodPrice').value;
+        const imgInput = document.getElementById('prodImg').files[0];
         
-        if(!name || !price || !imageFile) {
-            alert("Please fill all details and select an image");
+        if(!name || !price || !imgInput) {
+            alert("Please fill all details and select a photo");
             return;
         }
 
@@ -55,9 +100,21 @@
             const grid = document.getElementById('shopGrid');
             const card = document.createElement('div');
             card.className = 'card';
-            
-            // WhatsApp Message Link
-            const whatsappMsg = `https://wa.me/923001234567?text=I want to order: ${name} (Price: ${price} PKR)`;
-
             card.innerHTML = `
-                <img src="${e.target.
+                <img src="${e.target.result}">
+                <h3 style="margin:15px 0 5px 0;">${name}</h3>
+                <p class="price">Rs. ${price}</p>
+                <a href="https://wa.me/923001234567?text=Asalam-o-Alaikum, I want to buy: ${name}" class="whatsapp-btn" target="_blank">Order on WhatsApp</a>
+            `;
+            grid.insertAfter(card, grid.firstChild); // New item at top
+            
+            // Clear fields
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodPrice').value = '';
+        };
+        reader.readAsDataURL(imgInput);
+    }
+</script>
+
+</body>
+</html>
