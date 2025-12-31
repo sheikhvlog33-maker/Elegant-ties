@@ -1,32 +1,16 @@
-<script>
-    function addItem() {
-        const name = document.getElementById('prodName').value;
-        const price = document.getElementById('prodPrice').value;
-        const imgInput = document.getElementById('prodImg').files[0];
-        
-        if(!name || !price || !imgInput) {
-            alert("Pehle photo aur details bharein");
-            return;
-        }
+// Naya Firebase Code
+const firebaseConfig = {
+  apiKey: "AIzaSyB5vNGFV16jT7TqPnbfg4o1ZrPAGxrw67k",
+  authDomain: "elegant-ties-by-mrs-ajazsheikh.firebaseapp.com",
+  databaseURL: "https://elegant-ties-by-mrs-ajazsheikh-default-rtdb.firebaseio.com",
+  projectId: "elegant-ties-by-mrs-ajazsheikh",
+  storageBucket: "elegant-ties-by-mrs-ajazsheikh.firebasestorage.app",
+  messagingSenderId: "294111960990",
+  appId: "1:294111960990:web:c386907a3504605ea5808f"
+};
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const grid = document.getElementById('shopGrid');
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="${e.target.result}" style="width:100%; border-radius:15px;">
-                <h3>${name}</h3>
-                <p class="price">Rs. ${price}</p>
-                <a href="https://wa.me/923123456789?text=Asalam-o-Alaikum, I want to order: ${name}" 
-                   class="whatsapp-btn" target="_blank" 
-                   style="background:#25D366; color:white; padding:10px 20px; text-decoration:none; border-radius:20px; display:inline-block;">
-                   Order on WhatsApp
-                </a>
-            `;
-            grid.prepend(card);
-            alert("Product Added! Niche check karen.");
-        };
-        reader.readAsDataURL(imgInput);
-    }
-</script>
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const database = firebase.database();
