@@ -8,30 +8,31 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: #fff5f8; margin: 0; padding: 20px; }
-        .header { background: #d02090; color: white; padding: 15px; border-radius: 0 0 20px 20px; margin: -20px -20px 20px -20px; }
+        .header { background: #d02090; color: white; padding: 15px; border-radius: 0 0 20px 20px; margin: -20px -20px 20px -20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .admin-box { display: none; background: #fff; padding: 20px; border-radius: 15px; border: 2px dashed #ff69b4; margin-bottom: 30px; }
         .product-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 25px; box-shadow: 0 6px 12px rgba(0,0,0,0.08); border: 1px solid #ffdae9; }
-        img { max-width: 100%; border-radius: 12px; height: auto; }
-        h2 { color: #d02090; }
-        .price { color: #d02090; font-weight: bold; font-size: 1.3rem; }
-        .wa-btn { background-color: #25d366; color: white; padding: 12px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; }
-        .del-btn { display: none; background-color: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 8px; margin-top: 15px; width: 100%; cursor: pointer; }
+        img { max-width: 100%; border-radius: 12px; height: auto; margin-bottom: 10px; }
+        h2 { color: #d02090; margin: 10px 0; }
+        .price { color: #d02090; font-weight: bold; font-size: 1.3rem; margin: 10px 0; }
+        .wa-btn { background-color: #25d366; color: white; padding: 12px; border-radius: 10px; text-decoration: none; display: block; font-weight: bold; margin-top: 10px; }
+        .del-btn { display: none; background-color: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 8px; margin-top: 15px; width: 100%; cursor: pointer; font-weight: bold; }
         input, .add-btn { width: 95%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ffdae9; box-sizing: border-box; }
-        .add-btn { background: #ff69b4; color: white; border: none; font-weight: bold; }
+        .add-btn { background: #ff69b4; color: white; border: none; font-weight: bold; cursor: pointer; }
         #admin-lock { color: #ffdae9; cursor: pointer; margin-top: 60px; font-size: 12px; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 style="margin:0;">Elegant Ties</h1>
-        <p style="margin:5px 0 0 0;">By Mrs Ajaz Sheikh</p>
+        <h1 style="margin:0; font-size: 1.6rem;">Elegant Ties</h1>
+        <p style="margin:5px 0 0 0; font-size: 0.9rem;">By Mrs Ajaz Sheikh</p>
     </div>
 
     <div id="admin-panel" class="admin-box">
-        <h3>Admin Panel (Unlocked)</h3>
+        <h3 style="color:#d02090;">Admin Panel (Unlocked)</h3>
         <input type="text" id="name" placeholder="Item Name">
         <input type="number" id="price" placeholder="Price (PKR)">
+        <p style="font-size: 0.8rem; color: #666; margin: 5px 0;">Select Photo:</p>
         <input type="file" id="image" accept="image/*">
         <button class="add-btn" onclick="addItem()">Upload to Website</button>
     </div>
@@ -56,14 +57,14 @@
     let isAdminMode = false;
 
     function checkPass() {
-        let pass = prompt("Secret Password Dalein:");
-        if(pass === "1feb") { // Naya Password
+        let pass = prompt("Secret Password:");
+        if(pass === "1feb") {
             isAdminMode = true;
             document.getElementById('admin-panel').style.display = 'block';
-            alert("Success! Buttons are now visible.");
+            alert("Admin Mode On!");
             renderProducts();
         } else {
-            alert("Wrong Password!");
+            alert("Ghalat Password!");
         }
     }
 
@@ -71,13 +72,13 @@
         const name = document.getElementById('name').value;
         const price = document.getElementById('price').value;
         const file = document.getElementById('image').files[0];
-        if(!name || !price || !file) return;
+        if(!name || !price || !file) { alert("Sari maloomat bharein!"); return; }
 
         const reader = new FileReader();
         reader.onload = function(e) {
             database.ref('products').push({ name, price, image: e.target.result })
             .then(() => {
-                alert("Product Added!");
+                alert("Product add ho gaya!");
                 location.reload(); 
             });
         };
@@ -85,7 +86,7 @@
     }
 
     function deleteItem(id) {
-        if(confirm("Are you sure?")) {
+        if(confirm("Kya aap isay delete karna chahti hain?")) {
             database.ref('products/' + id).remove();
         }
     }
@@ -95,13 +96,18 @@
             const data = snapshot.val();
             const list = document.getElementById('product-list');
             list.innerHTML = "";
+            if(!data) { list.innerHTML = "<p>Abhi koi product nahi hai.</p>"; return; }
+
             for (let id in data) {
+                // Aapka number yahan set kar diya gaya hai
+                let myNumber = "923473184408"; 
+                
                 list.innerHTML += `
                     <div class="product-card">
                         <img src="${data[id].image}">
                         <h2>${data[id].name}</h2>
                         <p class="price">Rs. ${data[id].price}</p>
-                        <a class="wa-btn" href="https://wa.me/923000000000?text=I want to order ${data[id].name}">Order on WhatsApp</a>
+                        <a class="wa-btn" href="https://wa.me/${myNumber}?text=Assalam o Alaikum, I want to order ${data[id].name}">Order on WhatsApp</a>
                         <button class="del-btn" style="display:${isAdminMode ? 'block' : 'none'}" onclick="deleteItem('${id}')">Delete Item</button>
                     </div>`;
             }
